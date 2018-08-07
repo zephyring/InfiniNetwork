@@ -1,5 +1,9 @@
 package com.zephyr.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.zephyr.network.NeighborDiscovery;
 import com.zephyr.network.Network;
 import com.zephyr.traffic.SporadicNodeGenerator;
@@ -37,5 +41,13 @@ public class AppConfig {
         Network network
     ) {
         return new SporadicNodeGenerator(network);
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper()
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            .configure(SerializationFeature.INDENT_OUTPUT, true)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 }

@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.util.Iterator;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Created by Zephyr Lin
@@ -33,7 +33,14 @@ public class SporadicNodeGenerator {
     public void removeNode() {
         Set<Node> nodes = network.getNodes();
 
-        nodes.removeIf(n -> n.getNeighbours().size() > 3);
+        final Iterator<Node> each = nodes.iterator();
+        while (each.hasNext()) {
+            Node node = each.next();
+            if (node.getNeighbours().size() > 3) {
+                each.remove();
+                network.deregisterNode(node);
+            }
+        }
     }
 
 }

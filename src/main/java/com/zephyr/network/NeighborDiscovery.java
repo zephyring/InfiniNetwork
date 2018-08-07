@@ -30,7 +30,7 @@ public class NeighborDiscovery {
     public void discoverNeighbors() {
         Set<Node> nodes = network.getNodes();
 
-        // pair nodes up when their ids are 20% similar
+        // pair nodes up when their ids are similar
         calculateNeighbors(nodes, 0.2);
     }
 

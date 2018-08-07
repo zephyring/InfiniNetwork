@@ -16,7 +16,7 @@ public class Entropy {
     private AtomicLong value = new AtomicLong(0L);
 
     public long increase(int delta) {
-        if (delta < 0) {
+        if (delta <= 0) {
             throw new IllegalArgumentException("Entropy should always increase");
         }
 
