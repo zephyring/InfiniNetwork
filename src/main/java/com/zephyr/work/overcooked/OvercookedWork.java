@@ -31,22 +31,27 @@ public class OvercookedWork extends AbstractWork {
     private ExecutorService cookExecutors = Executors.newFixedThreadPool(MAX_COOK_COUNT);
     private ExecutorService orderExecutor = Executors.newSingleThreadExecutor();
 
-    private static final Long REWARDED_NEEDED = 1000L;
-    private static final int COOK_COUNT = 2;
+    private static final Long REWARDED_NEEDED = 200L;
     private static final int MAX_COOK_COUNT = 5;
 
     @Override
     protected void doWorkInternal() {
         orderExecutor.submit(() -> orderGenerator.start());
 
-        for (int i = 0; i < COOK_COUNT; i++) {
-            Cook cook = new GeneralCook(
-                String.valueOf("Cook " + i),
-                comingOrders,
-                rewards
-            );
-            cookExecutors.submit(cook);
-        }
+        Cook generalCook = new GeneralCook(
+            String.valueOf("General cook 1"),
+            comingOrders,
+            rewards
+        );
+        Cook fastChopper = new FastChopper(
+            String.valueOf("Fast chopper"),
+            comingOrders,
+            rewards
+        );
+        cookExecutors.submit(fastChopper);
+        cookExecutors.submit(generalCook);
+
+        long start = System.currentTimeMillis();
 
         while (rewards.get() < REWARDED_NEEDED) {
             try {
@@ -57,7 +62,7 @@ public class OvercookedWork extends AbstractWork {
             }
         }
 
-        LOG.info("Overcooked work finished with reward={}", rewards.get());
+        LOG.info("Overcooked work finished with reward={}, timeElapsed={} ms", rewards.get(), System.currentTimeMillis() - start);
     }
 
     @Test
